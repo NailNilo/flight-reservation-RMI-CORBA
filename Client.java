@@ -37,7 +37,7 @@ public class Client {
             authenticateButton.addActionListener(e -> {
                 try {
                     // Connect to the RMI server
-                    Registry registry = LocateRegistry.getRegistry("localhost");
+                    Registry registry = LocateRegistry.getRegistry("localhost", 1099);
 
                     AuthenticationService authService = (AuthenticationService) registry.lookup("AuthenticationService");
                     if (authService.authenticate(usernameField.getText(), passwordField.getText())) {
