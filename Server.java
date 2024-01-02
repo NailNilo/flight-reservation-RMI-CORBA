@@ -19,7 +19,7 @@ public class Server {
                 ReservationServiceImpl reservationService = new ReservationServiceImpl();
                 AuthenticationServiceImpl authService = new AuthenticationServiceImpl();
 
-                Registry registry = LocateRegistry.getRegistry();
+                Registry registry = LocateRegistry.createRegistry(6942);
                 registry.bind("AdministrationService", adminService);
                 registry.bind("ReservationService", reservationService);
                 registry.bind("AuthenticationService", authService);

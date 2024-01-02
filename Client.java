@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.List;
 
 public class Client {
     public static void main(String[] args) {
@@ -43,6 +44,13 @@ public class Client {
                         textArea.append("Authenticated.\n");
 
                         // Add more code here to interact with the RMI server
+                        ReservationService reservationService = (ReservationService) registry.lookup("ReservationService");
+                        List<Flight> flights = reservationService.consultFlights();
+                        textArea.append("Available Flights:\n");
+                        for (Flight flight : flights) {
+                            textArea.append("Flight Code: " + flight.getCode() + ", Departure: " + flight.getDepartureAirport().getCode() +
+                                    ", Arrival: " + flight.getArrivalAirport().getCode() + ", Price: $" + flight.getPrice() + "\n");
+                        }
                     } else {
                         textArea.append("Authentication failed.\n");
                     }

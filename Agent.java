@@ -1,9 +1,12 @@
 import java.io.Serializable;
+
 public class Agent implements Serializable {
+    private String id;
     private String password;
     private boolean isAuthenticated;
 
     public Agent(String id, String password) {
+        this.id = id;
         this.password = password;
         this.isAuthenticated = false;
     }
@@ -22,6 +25,6 @@ public class Agent implements Serializable {
     }
 
     public String getId() {
-        return null;
+        return this.id;
     }
 }
