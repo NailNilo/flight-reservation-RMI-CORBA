@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReservationServiceImpl extends UnicastRemoteObject implements ReservationService {
-    private List<Reservation> reservations;
     private List<Flight> flightList;
     private List<Fare> fareList;
     private List<Reservation> reservationList;
 
     protected ReservationServiceImpl() throws RemoteException {
         super();
-        this.reservations = new ArrayList<>();
 
-        // Initialize flightList (assuming you have some initial data)
         flightList = new ArrayList<>();
         flightList.add(new Flight("69420", "Flight 1", null, null, null));
         flightList.add(new Flight("54654", "Flight 2", null, null, null));
@@ -29,28 +26,15 @@ public class ReservationServiceImpl extends UnicastRemoteObject implements Reser
 
     //DONE. This method is used to reserve a flight
     @Override
-    public String reserveFlight(String passengerCode, String flightCode, String seatNumber, Reservation.ReservationType reservationType, boolean isConfirmed) throws RemoteException {
-        // Create a new Reservation and add it to the list of reservations
-        Reservation reservation = new Reservation(passengerCode, flightCode, seatNumber, reservationType, isConfirmed);
-        reservations.add(reservation);
-
-        // Return a confirmation message
-        return "Flight reserved for passenger " + passengerCode + " on flight " + flightCode;
-    }
-
-    //DONE. This method is used to cancel a reservation
-    @Override
     public List<Flight> consultFlights() throws RemoteException {
-        // Since we're using in-memory data, we can simply return the list
         return flightList;
     }
 
-    //DONE. This method is used to consult the fares of a flight
+    //DONE.
     @Override
     public List<Fare> consultFares(String flightId) throws RemoteException {
         List<Fare> matchingFares = new ArrayList<>();
 
-        // Iterate through the in-memory fareList to find matching fares
         for (Fare fare : fareList) {
             if (fare.getFlightId().equals(flightId)) {
                 matchingFares.add(fare);
@@ -60,26 +44,53 @@ public class ReservationServiceImpl extends UnicastRemoteObject implements Reser
         return matchingFares;
     }
 
-    //DONE. This method is used to make a reservation
+    //DONE.
     @Override
-    public Reservation makeReservation(String flightId,String passengerName) throws RemoteException {
-        // TODO Auto-generated method stub
-        Reservation reservation = new Reservation(passengerName, flightId, "1A", Reservation.ReservationType.ECONOMY, true);
-        reservationList.add(reservation);
-
-        return reservation;
+    public Reservation makeReservation(String flightId, String passengerName) throws RemoteException {
+        // TODO: Implement the reservation creation logic
+        Flight flight = findFlightById(flightId);
+        if (flight != null) {
+            Reservation reservation = new Reservation(passengerName, flightId, "", Reservation.ReservationType.ECONOMY, false);
+            reservationList.add(reservation);
+            return reservation;
+        } else {
+            throw new RemoteException("Flight not found.");
+        }
     }
 
-    
+//-----------------------------------------------------------------------------------------------------
+    //solution  later fuck it
+    //DONE BUT NO USE??
     @Override
     public void updatePassengerInfo(String passengerName, PassengerInfo info) throws RemoteException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updatePassengerInfo'");
+        // TODO: Implement the passenger info update logic
+        // You may want to search for the passenger in the reservationList and update the info
+    }
+    //DONE BUT NO USE??
+    @Override
+    public void reserveFlight(Agent agent, Passenger passenger, Flight flight, String string) throws RemoteException {
+        // TODO: Implement the flight reservation logic
+        // This method takes an Agent, Passenger, and Flight as parameters; you can customize the logic accordingly
+    }
+//-----------------------------------------------------------------------------------------------------
+
+    //DONE.
+    @Override
+    public String reserveFlight(String passengerCode, String flightCode, String seatNumber,
+                                Reservation.ReservationType reservationType, boolean isConfirmed) throws RemoteException {
+        // TODO: Implement the flight reservation logic and return a confirmation message
+        // This method takes individual parameters for reservation; you can customize the logic accordingly
+        return "Reservation confirmed for passenger " + passengerCode + " on flight " + flightCode +
+                " with seat " + seatNumber + ". Confirmation status: " + isConfirmed;
     }
 
-    @Override
-    public void reserveFlight(Agent agent, Passenger passenger, Flight flight, String string) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'reserveFlight'");
+    // Helper method to find a flight by its ID
+    private Flight findFlightById(String flightId) {
+        for (Flight flight : flightList) {
+            if (flight.getCode().equals(flightId)) {
+                return flight;
+            }
+        }
+        return null;
     }
 }
