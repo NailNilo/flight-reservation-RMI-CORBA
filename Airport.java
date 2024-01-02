@@ -9,9 +9,6 @@ public class Airport {
         this.isPaid = isPaid;
     }
 
-    public Airport(String code2, String city2, String string) {
-    }
-
     // Getter for code
     public String getCode() {
         return this.code;
