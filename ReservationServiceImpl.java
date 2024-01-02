@@ -33,6 +33,7 @@ public class ReservationServiceImpl extends UnicastRemoteObject implements Reser
         throw new UnsupportedOperationException("Unimplemented method 'consultFlights'");
     }
 
+    //DONE. This method is used to consult the fares of a flight
     @Override
     public List<Fare> consultFares(String flightId) throws RemoteException {
         List<Fare> matchingFares = new ArrayList<>();
