@@ -7,9 +7,12 @@ public class ReservationServiceImpl extends UnicastRemoteObject implements Reser
     private List<Flight> flightList;
     private List<Fare> fareList;
     private List<Reservation> reservationList;
-
+    
     protected ReservationServiceImpl() throws RemoteException {
         super();
+        
+        Airport airport2 = new Airport("Airport2");
+        Airport airport1 = new Airport("Airport1");
 
         flightList = new ArrayList<>();
         flightList.add(new Flight("69420", "Flight 1", null, null, null));

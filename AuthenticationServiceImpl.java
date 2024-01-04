@@ -8,7 +8,7 @@ public class AuthenticationServiceImpl extends UnicastRemoteObject implements Au
     // Store username-password pairs for admin and client
     private Map<String, String> adminCredentials;
     private Map<String, String> clientCredentials;
-
+    
     protected AuthenticationServiceImpl() throws RemoteException {
         super();
         adminCredentials = new HashMap<>();

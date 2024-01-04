@@ -3,10 +3,15 @@ public class Airport {
     private String city;
     private boolean isPaid;
 
+    
+
     public Airport(String code, String city, boolean isPaid) {
         this.code = code;
         this.city = city;
         this.isPaid = isPaid;
+    }
+
+    public Airport(String string) {
     }
 
     // Getter for code
