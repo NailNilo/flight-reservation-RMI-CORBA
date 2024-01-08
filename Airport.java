@@ -9,32 +9,26 @@ public class Airport {
         this.isPaid = isPaid;
     }
 
-    // Getter for code
     public String getCode() {
         return this.code;
     }
 
-    // Setter for code
     public void setCode(String code) {
         this.code = code;
     }
 
-    // Getter for city
     public String getCity() {
         return this.city;
     }
 
-    // Setter for city
     public void setCity(String city) {
         this.city = city;
     }
 
-    // Getter for isPaid
     public boolean getIsPaid() {
         return this.isPaid;
     }
 
-    // Setter for isPaid
     public void setIsPaid(boolean isPaid) {
         this.isPaid = isPaid;
     }

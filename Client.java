@@ -1,64 +1,337 @@
 import javax.swing.*;
-import java.awt.*;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.rmi.Naming;
 
-public class Client {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Flight Reservation Client");
-            frame.setLayout(new BorderLayout());
+public class Client extends JFrame {
+       private JTextField usernameField;
+       private JPasswordField passwordField;
 
-            JTextArea textArea = new JTextArea();
-            textArea.setEditable(false);
-            frame.add(new JScrollPane(textArea), BorderLayout.CENTER);
+       public Client() {
+              super("Welcome to Dumb & Dumber Airlines!");
 
-            JPanel inputPanel = new JPanel();
-            inputPanel.setLayout(new GridLayout(0, 2));
+              usernameField = new JTextField(20);
+              passwordField = new JPasswordField(20);
+              JButton loginButton = new JButton("Login");
 
-            JTextField usernameField = new JTextField();
-            inputPanel.add(new JLabel("Username:"));
-            inputPanel.add(usernameField);
+       loginButton.addActionListener(new ActionListener() {
+       @Override
+       public void actionPerformed(ActionEvent e) {
+              String username = usernameField.getText();
+              char[] passwordChars = passwordField.getPassword();
+              String password = new String(passwordChars);
 
-            JTextField passwordField = new JTextField();
-            inputPanel.add(new JLabel("Password:"));
-            inputPanel.add(passwordField);
+              try {
+              AuthService sm = (AuthService) Naming.lookup("rmi://localhost:6942/AuthService");
+              if (sm != null) {
+                     if (sm.Authothification(username, password)) {
+                            openMenu(username, password);
+                     } else {
+                            JOptionPane.showMessageDialog(Client.this, "Username or password is incorrect","Error", JOptionPane.ERROR_MESSAGE);
+                     }
+                     } else {
+                            JOptionPane.showMessageDialog(Client.this, "Failed to connect to the server","Error", JOptionPane.ERROR_MESSAGE);
+                     }
+                     } catch (Exception ex) {
+                     ex.printStackTrace();
+                     }
+              }
+              });
 
-            JButton authenticateButton = new JButton("Authenticate");
-            inputPanel.add(authenticateButton);
+              JPanel panel = new JPanel();
+              panel.add(new JLabel("Username: "));
+              panel.add(usernameField);
+              panel.add(new JLabel("Password: "));
+              panel.add(passwordField);
+              panel.add(loginButton);
 
-            frame.add(inputPanel, BorderLayout.NORTH);
+              add(panel);
+              setSize(600, 150);
+              setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+              setLocationRelativeTo(null);
+              setVisible(true);
+       }
 
-            frame.setSize(500, 300);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setVisible(true);
+       private void openMenu(String username, String password) {
+              if ("admin".equals(username)|| "admin".equals(password)) {
+              AdminMenu adminMenu = new AdminMenu();
+              adminMenu.setVisible(true);
+              } else if ("client".equals(username)||"client".equals(password)) {
+              ClientMenu clientMenu = new ClientMenu();
+              clientMenu.setVisible(true);
+              }else
+              {
+              JOptionPane.showMessageDialog(this, "Username or password is incorrect","Error", JOptionPane.ERROR_MESSAGE);
+              }
+              this.dispose();
+       }
 
-            authenticateButton.addActionListener(e -> {
-                try {
-                    // Connect to the RMI server
-                    Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+       public static void main(String[] args) {
+              SwingUtilities.invokeLater(new Runnable() {
+              @Override
+              public void run() {
+                     new Client();
+              }
+              });
+       }
+       }
 
-                    AuthenticationService authService = (AuthenticationService) registry.lookup("AuthenticationService");
-                    if (authService.authenticate(usernameField.getText(), passwordField.getText())) {
-                        textArea.append("Authenticated.\n");
+       class AdminMenu extends JFrame {
+       public AdminMenu() {
+              super("Dumb & Dumber Admin Menu");
 
-                        // Add more code here to interact with the RMI server
-                        ReservationService reservationService = (ReservationService) registry.lookup("ReservationService");
-                        List<Flight> flights = reservationService.consultFlights();
-                        textArea.append("Available Flights:\n");
-                        for (Flight flight : flights) {
-                            textArea.append("Flight Code: " + flight.getCode() + ", Departure: " + flight.getDepartureAirport().getCode() +
-                                    ", Arrival: " + flight.getArrivalAirport().getCode() + ", Price: $" + flight.getPrice() + "\n");
-                        }
-                    } else {
-                        textArea.append("Authentication failed.\n");
-                    }
-                } catch (Exception ex) {
-                    textArea.append("Client exception: " + ex.toString() + "\n");
-                    ex.printStackTrace();
-                }
-            });
-        });
-    }
+              JButton addFlightButton = new JButton("Add New Flight");
+              JButton addAirportButton = new JButton("Add New Airport");
+              JButton registerPassengerButton = new JButton("Register New Passenger");
+              JButton viewAllFlightsButton = new JButton("View All Flights");
+              JButton editFlight = new JButton("Edit Flight");
+              JButton editAirport = new JButton("Edit Airport");
+
+              addFlightButton.addActionListener(new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                     NewFlight();
+              }
+              });
+              addAirportButton.addActionListener(new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                     NewAirport();
+              }
+              });
+
+              registerPassengerButton.addActionListener(new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                     registerPassenger();
+              }
+              });
+              viewAllFlightsButton.addActionListener(new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                     viewAllFlights();
+              }
+              });
+
+              editFlight.addActionListener(new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                     editFlight();
+              }
+              });
+              editAirport.addActionListener(new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                     editAirport();
+              }
+              });
+
+              JPanel panel = new JPanel();
+              panel.add(addFlightButton);
+              panel.add(addAirportButton);
+              panel.add(registerPassengerButton);
+              panel.add(viewAllFlightsButton);
+              panel.add((editFlight));
+              panel.add((editAirport));
+
+              add(panel);
+              setSize(600, 150);
+              setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+              setLocationRelativeTo(null);
+       }
+
+       public void NewFlight() {
+              String code = JOptionPane.showInputDialog(this, "Enter Flight Code:");
+              String departureAirport = JOptionPane.showInputDialog(this, "Enter Departure Airport:");
+              String arrivalAirport = JOptionPane.showInputDialog(this, "Enter Arrival Airport:");
+              String departureTime = JOptionPane.showInputDialog(this, "Enter Departure Time:");
+              String arrivalTime = JOptionPane.showInputDialog(this, "Enter Arrival Time:");
+              double price = Double.parseDouble(JOptionPane.showInputDialog(this, "Enter Price:"));
+
+              try {
+              AdminService sm = (AdminService) Naming.lookup("rmi://localhost:6942/AdminService");
+              if (sm != null) {
+                     sm.addNewFlight(code, departureAirport, arrivalAirport, departureTime, arrivalTime, price);
+              } else {
+                     JOptionPane.showMessageDialog(this, "Failed to connect to the server","Error", JOptionPane.ERROR_MESSAGE);
+              }
+              } catch (Exception ex) {
+                     ex.printStackTrace();
+              }
+       }
+
+       public void NewAirport() {
+              String code = JOptionPane.showInputDialog(this, "Enter Airport Code:");
+              String city = JOptionPane.showInputDialog(this, "Enter City:");
+              try {
+              AdminService sm = (AdminService) Naming.lookup("rmi://localhost:6942/AdminService");
+              if (sm != null) {
+                     sm.addNewAirport(code, city);
+              } else {
+                     JOptionPane.showMessageDialog(this, "Failed to connect to the server","Error", JOptionPane.ERROR_MESSAGE);
+              }
+              } catch (Exception ex) {
+                     ex.printStackTrace();
+              }
+       }
+       public void registerPassenger() {
+              String passengerName = JOptionPane.showInputDialog(this, "Enter Your Full Name:");
+              String phonenumber = JOptionPane.showInputDialog(this, "Enter Your Phone Number:");
+              String address = JOptionPane.showInputDialog(this, "Enter Your Address:");
+              String email = JOptionPane.showInputDialog(this, "Enter Your Email:");
+              String passport = JOptionPane.showInputDialog(this, "Enter Your Passport ID:");
+              String seattype = JOptionPane.showInputDialog(this, "Choose Your Flight Type(First/Economy) Class:");
+              try {
+              AdminService sm = (AdminService) Naming.lookup("rmi://localhost:6942/AdminService");
+              if (sm != null) {
+                     sm.registerNewPassenger(passengerName, phonenumber,address,email,passport,seattype);
+              } else {
+                     JOptionPane.showMessageDialog(this, "Failed to connect to the server", "Error", JOptionPane.ERROR_MESSAGE);
+              }
+              } catch (Exception ex) {
+                     ex.printStackTrace();
+              }
+       }
+       public void viewAllFlights() {
+       try {
+       AdminService sm = (AdminService) Naming.lookup("rmi://localhost:6942/AdminService");
+       if (sm != null) {
+              sm.viewAllFlights();
+       } else {
+              JOptionPane.showMessageDialog(this, "There are no flights", "No Flights Found", JOptionPane.ERROR_MESSAGE);
+       }
+       } catch (Exception ex) {
+              ex.printStackTrace();
+       }
+}
+       public void editFlight() {
+              try {
+              AdminService sm = (AdminService) Naming.lookup("rmi://localhost:6942/AdminService");
+              if (sm != null) {
+                     sm.editFlight();
+              } else {
+                     JOptionPane.showMessageDialog(this, "Failed to connect to the server", "Error", JOptionPane.ERROR_MESSAGE);
+              }
+              } catch (Exception ex) {
+                     ex.printStackTrace();
+              }
+       }
+
+       public void editAirport() {
+              try {
+              AdminService sm = (AdminService) Naming.lookup("rmi://localhost:6942/AdminService");
+              if (sm != null) {
+                     sm.editAirport();
+              } else {
+                     JOptionPane.showMessageDialog(this, "Failed to connect to the server", "Error", JOptionPane.ERROR_MESSAGE);
+              }
+              } catch (Exception ex) {
+                     ex.printStackTrace();
+              }
+       }
+}
+class ClientMenu extends JFrame {
+       public ClientMenu() {
+              super("Dumb & Dumber Client Menu");
+
+              JButton viewAllFlightsButton = new JButton("View All Flights");
+              JButton availableseatsButton = new JButton("Available Seats");
+              JButton registerPassengerButton = new JButton("Book A Seat");
+              JButton paymentButton = new JButton("Payment");
+
+              viewAllFlightsButton.addActionListener(new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                     viewAllFlights();
+              }
+              });
+
+              registerPassengerButton.addActionListener(new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                     NewregisterPassenger();
+              }
+              });
+
+              availableseatsButton.addActionListener(new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                     availableseats();
+              }
+              });
+
+              paymentButton.addActionListener(new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                     payment();
+              }
+              });
+
+              JPanel panel = new JPanel();
+              panel.add(viewAllFlightsButton);
+              panel.add(registerPassengerButton);
+              panel.add(availableseatsButton);
+              panel.add(paymentButton);
+
+              add(panel);
+              setSize(600, 150);
+              setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+              setLocationRelativeTo(null);
+       }
+       public void NewregisterPassenger() {
+              String passengerName = JOptionPane.showInputDialog(this, "Enter Your Full Name:");
+              String phonenumber = JOptionPane.showInputDialog(this, "Enter Your Phone Number:");
+              String address = JOptionPane.showInputDialog(this, "Enter Your Address:");
+              String email = JOptionPane.showInputDialog(this, "Enter Your Email:");
+              String passport = JOptionPane.showInputDialog(this, "Enter Your Passport ID:");
+              String seattype = JOptionPane.showInputDialog(this, "Choose Your Flight Type(First/Economy) Class:");
+              try {
+              ClientService sm = (ClientService) Naming.lookup("rmi://localhost:6942/ClientService");
+              if (sm != null) {
+                     sm.registerNewPassenger(passengerName, phonenumber,address,email,passport,seattype);
+              } else {
+                     JOptionPane.showMessageDialog(this, "Failed to connect to the server", "Error", JOptionPane.ERROR_MESSAGE);
+              }
+              } catch (Exception ex) {
+                     ex.printStackTrace();
+              }
+       }
+       public void viewAllFlights() {
+       try {
+       ClientService sm = (ClientService) Naming.lookup("rmi://localhost:6942/ClientService");
+       if (sm != null) {
+              sm.viewAllFlights();
+       } else {
+              JOptionPane.showMessageDialog(this, "There are no flights", "No Flights Found", JOptionPane.ERROR_MESSAGE);
+       }
+       } catch (Exception ex) {
+              ex.printStackTrace();
+       }
+}
+       public void availableseats() {
+              try {
+              ClientService sm = (ClientService) Naming.lookup("rmi://localhost:6942/ClientService");
+              if (sm != null) {
+                     sm.availableseats();
+              } else {
+                     JOptionPane.showMessageDialog(this, "Failed to connect to the server", "Error", JOptionPane.ERROR_MESSAGE);
+              }
+              } catch (Exception ex) {
+                     ex.printStackTrace();
+              }
+       }
+       public void payment() {
+              double payment = Double.parseDouble(JOptionPane.showInputDialog(this, "Enter Payment:"));
+              try {
+              ClientService sm = (ClientService) Naming.lookup("rmi://localhost:6942/ClientService");
+              if (sm != null) {
+                     sm.payment(payment);
+                     JOptionPane.showMessageDialog(this,"Payment Successful","Payment",JOptionPane.INFORMATION_MESSAGE);
+              } else {
+                     JOptionPane.showMessageDialog(this, "Failed to connect to the server", "Error", JOptionPane.ERROR_MESSAGE);
+              }
+              } catch (Exception ex) {
+                     ex.printStackTrace();
+              }
+       }
 }
