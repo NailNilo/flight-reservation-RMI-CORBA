@@ -17,42 +17,34 @@ public class Reservation {
         FIRST_CLASS,
         ECONOMY
     }
-    // Getter for passengerCode
     public String getPassengerCode() {
         return this.passengerCode;
     }
 
-    // Setter for passengerCode
     public void setPassengerCode(String passengerCode) {
         this.passengerCode = passengerCode;
     }
 
-    // Getter for flightCode
     public String getFlightCode() {
         return this.flightCode;
     }
 
-    // Setter for flightCode
     public void setFlightCode(String flightCode) {
         this.flightCode = flightCode;
     }
 
-    // Getter for seatNumber
     public String getSeatNumber() {
         return this.seatNumber;
     }
 
-    // Setter for seatNumber
     public void setSeatNumber(String seatNumber) {
         this.seatNumber = seatNumber;
     }
 
-    // Getter for isConfirmed
     public boolean getIsConfirmed() {
         return this.isConfirmed;
     }
 
-    // Setter for isConfirmed
     public void setIsConfirmed(boolean isConfirmed) {
         this.isConfirmed = isConfirmed;
     }
