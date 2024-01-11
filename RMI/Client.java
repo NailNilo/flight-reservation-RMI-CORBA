@@ -8,6 +8,8 @@ public class Client extends JFrame {
        private JPasswordField passwordField;
 
        public Client() {
+              // totally original name xD
+              //am the dumb tho,taken!
               super("Welcome to Dumb & Dumber Airlines!");
 
               usernameField = new JTextField(20);

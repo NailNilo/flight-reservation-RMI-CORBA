@@ -3,6 +3,7 @@ import java.rmi.registry.LocateRegistry;
 
 public class Serveur {
 
+	// it's server, not serveur :D
 	public static void main(String[] args) throws Exception {
 		try{
 		LocateRegistry.createRegistry(6942);

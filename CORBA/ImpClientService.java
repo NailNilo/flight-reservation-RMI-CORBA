@@ -57,7 +57,7 @@ public class ImpClientService extends ClientServicePOA {
         System.out.println("Payment Successful:");
         System.out.println("Payment Added: " + pay + "$");
     }
-
+// head spinning *.*
     @Override
     public boolean _is_a(String repositoryIdentifier) {
         // TODO Auto-generated method stub

@@ -18,7 +18,8 @@ public class ImpClientService extends UnicastRemoteObject implements ClientServi
         System.out.println("Passenger Seat Type: " + seattype);
         System.out.println();
     }
-
+// todo list: database maybe?
+// too late
     @Override
     public void viewAllFlights() throws RemoteException {
             System.out.println("All Flights:");

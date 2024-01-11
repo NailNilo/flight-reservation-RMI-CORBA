@@ -49,7 +49,7 @@ public class Flight implements Serializable {
     public void setArrivalAirport(Airport arrivalAirport) {
         this.arrivalAirport = arrivalAirport;
     }
-
+// changed to string cuz JAVA VERSION IS SOOOOOO STUPIDDDDD
     public String getDepartureDate() {
         return this.departureDate;
     }
